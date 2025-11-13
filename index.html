@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meus Pontos</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff8f00, #ff6b00);
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .header {
+      background: linear-gradient(135deg, #ff8f00, #f97316);
+      padding: 35px 20px;
+      text-align: center;
+      color: white;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 34px;
+      font-weight: 800;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    }
+    .login-box, .painel { padding: 40px; text-align: center; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 16px;
+      margin: 15px 0;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-size: 18px;
+      box-sizing: border-box;
+      transition: 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #ff8f00;
+      box-shadow: 0 0 0 4px rgba(255,143,0,0.3);
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #ff8f00, #f97316);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 19px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255,143,0,0.5);
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(255,143,0,0.6);
+    }
+
+    .valor-bruto {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      padding: 25px;
+      margin: 20px 40px;
+      border-radius: 18px;
+      font-size: 28px;
+      font-weight: 900;
+      color: #e65100;
+      border: 3px solid #ff8f00;
+      box-shadow: 0 10px 30px rgba(255,143,0,0.3);
+    }
+
+    .ponto {
+      background: #fff8e1;
+      padding: 22px;
+      margin: 18px 40px;
+      border-radius: 16px;
+      border-left: 8px solid #ff6b00;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .ponto:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(255,107,0,0.3);
+    }
+    .ponto strong { font-size: 22px; color: #d84315; }
+
+    .detalhes {
+      display: none;
+      background: white;
+      padding: 25px;
+      margin-top: 15px;
+      border-radius: 12px;
+      border: 2px dashed #ffcc80;
+      font-size: 16px;
+      color: #444;
+    }
+
+    .btn-porcentagem {
+      background: linear-gradient(135deg, #e65100, #ff6b00) !important;
+      margin-top: 15px;
+      font-size: 18px !important;
+    }
+
+    .popup-porcentagem {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      display: none;
+    }
+    .popup-content {
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .popup-content h3 { color: #e65100; margin-top: 0; font-size: 24px; }
+    .popup-content input {
+      width: 100%;
+      padding: 16px;
+      margin: 15px 0;
+      border: 3px solid #ff8f00;
+      border-radius: 12px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .resultado-porcentagem {
+      font-size: 34px;
+      font-weight: 900;
+      color: #e65100;
+      margin: 25px 0;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .close-popup {
+      background: #c62828 !important;
+      padding: 14px 20px;
+      margin-top: 15px;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen">
+      <div class="header"><h1>MEUS PONTOS</h1></div>
+      <div class="login-box">
+        <input type="text" id="cpf" placeholder="CPF do locador (apenas números)" maxlength="11" />
+        <input type="password" id="referencia" placeholder="Referência (sua senha)" />
+        <button onclick="acessarPainel()">ACESSAR MEUS PONTOS</button>
+      </div>
+    </div>
+
+    <!-- PAINEL (só aparece depois do login) -->
+    <div id="painel-screen" class="hidden">
+      <div class="header"><h1>MEUS PONTOS</h1></div>
+      <div class="painel">
+        <div id="valor-bruto" class="valor-bruto">VALOR BRUTO DOS PONTOS: R$ 0,00</div>
+        <div id="lista-pontos"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP PORCENTAGEM -->
+  <div id="popup-porcentagem" class="popup-porcentagem">
+    <div class="popup-content">
+      <h3>CALCULAR PORCENTAGEM</h3>
+      <p>Valor bruto deste ponto: <strong id="valor-ponto">0</strong> créditos</p>
+      <input type="number" id="porcentagem-input" placeholder="Digite a %" min="1" max="100" />
+      <button onclick="calcularPorcentagem()">CALCULAR</button>
+      <div class="resultado-porcentagem" id="resultado-porcentagem"></div>
+      <button class="close-popup" onclick="fecharPopup()">FECHAR</button>
+    </div>
+  </div>
+
+  <script>
+    let pontoAtual = 0;
+
+    async function acessarPainel() {
+      const cpf = document.getElementById('cpf').value.trim();
+      const ref = document.getElementById('referencia').value.trim();
+
+      if (!cpf || !ref) return alert('Preencha CPF e Referência!');
+      if (cpf.length !== 11 || !/^\d+$/.test(cpf)) return alert('CPF deve ter 11 números!');
+
+      const url = `https://script.google.com/macros/s/AKfycbz2Xe-Ge7MzchHKpYxnFnfL9g3AjLf9ZtgU62gT9jwdo4LZRxpR9ywWfI9dVIu85QKvdw/exec?rota=/consultar_por_referencia?cpf_locador=${cpf}&referencia=${ref}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.status !== "sucesso" || !data.pontos || data.referencia !== ref) {
+          alert('CPF ou Referência incorretos!');
+          return;
+        }
+
+        // REMOVE TOTALMENTE A TELA DE LOGIN
+        document.getElementById('login-screen').remove();
+
+        // Mostra o painel
+        document.getElementById('painel-screen').classList.remove('hidden');
+
+        // Calcula e mostra valor bruto total
+        const totalEntradas = data.pontos.reduce((s, p) => s + (parseInt(p.entradas) || 0), 0);
+        document.getElementById('valor-bruto').innerHTML = 
+          `VALOR BRUTO DOS PONTOS: R$ ${totalEntradas.toFixed(2).replace('.', ',')}`;
+
+        const container = document.getElementById('lista-pontos');
+        container.innerHTML = '';
+
+        data.pontos.forEach(ponto => {
+          const div = document.createElement('div');
+          div.className = 'ponto';
+          div.innerHTML = `<strong>${ponto.nome}</strong>`;
+
+          const detalhes = document.createElement('div');
+          detalhes.className = 'detalhes';
+          detalhes.innerHTML = `
+            <p><strong>Entradas:</strong> ${ponto.entradas} crédito(s)</p>
+            <p><strong>Músicas tocadas:</strong> ${ponto.musicas || 'Nenhuma'}</p>
+            <p><strong>Contato:</strong> ${ponto.contato}</p>
+            <p><strong>ID da máquina:</strong> ${ponto.id}</p>
+            <button class="btn-porcentagem" onclick="abrirPopupPorcentagem(${ponto.entradas})">
+              CALCULAR MINHA PORCENTAGEM
+            </button>
+          `;
+
+          div.onclick = (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+            const aberto = detalhes.style.display === 'block';
+            document.querySelectorAll('.detalhes').forEach(d => d.style.display = 'none');
+            detalhes.style.display = aberto ? 'none' : 'block';
+          };
+
+          div.appendChild(detalhes);
+          container.appendChild(div);
+        });
+
+      } catch (err) {
+        alert('Erro de conexão. Tente novamente.');
+      }
+    }
+
+    function abrirPopupPorcentagem(entradas) {
+      pontoAtual = entradas;
+      document.getElementById('valor-ponto').textContent = entradas;
+      document.getElementById('porcentagem-input').value = '';
+      document.getElementById('resultado-porcentagem').textContent = '';
+      document.getElementById('popup-porcentagem').style.display = 'flex';
+    }
+
+    function calcularPorcentagem() {
+      const pct = parseFloat(document.getElementById('porcentagem-input').value);
+      if (!pct || pct < 1 || pct > 100) {
+        alert('Digite uma porcentagem entre 1 e 100');
+        return;
+      }
+      const valor = (pontoAtual * pct / 100).toFixed(2).replace('.', ',');
+      document.getElementById('resultado-porcentagem').innerHTML = 
+        `<strong>${pct}% = R$ ${valor}</strong>`;
+    }
+
+    function fecharPopup() {
+      document.getElementById('popup-porcentagem').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
