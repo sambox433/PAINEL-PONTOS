@@ -177,7 +177,7 @@
       if (!cpf || !ref) return alert('Preencha CPF e Referência!');
       if (cpf.length !== 11 || !/^\d+$/.test(cpf)) return alert('CPF deve ter 11 números!');
 
-      const url = `https://script.google.com/macros/s/AKfycbz2Xe-Ge7MzchHKpYxnFnfL9g3AjLf9ZtgU62gT9jwdo4LZRxpR9ywWfI9dVIu85QKvdw/exec?rota=/consultar_por_referencia?cpf_locador=${cpf}&referencia=${ref}`;
+      const url = `https://script.google.com/macros/s/AKfycbz2Xe-Ge7MzchHKpYxnFnfL9g3AjLf9ZtgU62gT9jwdo4LZRxpR9ywWfI9dVIu85QKvdw/exec?rota=/consultar_pontos_por_cpf_referencia?cpf_locador=${cpf}&referencia=${ref}`;
 
       try {
         const res = await fetch(url);
@@ -290,4 +290,5 @@
   </script>
 </body>
 </html>
+
 
