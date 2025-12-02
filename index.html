@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meus Pontos</title>
+  <title>Meus Pontos - ADR SAMBOX</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin:0; padding:0; }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0; padding: 0;
       background: linear-gradient(135deg, #ff8f00, #ff6b00);
       min-height: 100vh;
       color: #333;
@@ -28,7 +27,6 @@
       color: white;
     }
     .header h1 { margin:0; font-size: 32px; font-weight: 800; text-shadow: 0 3px 10px rgba(0,0,0,0.4); }
-
     .login-box { padding: 40px 30px; text-align: center; }
     input[type="text"], input[type="password"] {
       width: 100%; padding: 16px; margin: 12px 0;
@@ -44,7 +42,6 @@
       box-shadow: 0 8px 25px rgba(255,143,0,0.5); transition: all 0.3s;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(255,143,0,0.6); }
-
     .valor-bruto {
       background: linear-gradient(135deg, #fff3e0, #ffe0b2);
       padding: 25px; margin: 20px;
@@ -52,7 +49,6 @@
       color: #e65100; text-align: center;
       border: 3px solid #ff8f00; box-shadow: 0 10px 30px rgba(255,143,0,0.3);
     }
-
     .ponto {
       background: #fff8e1; padding: 20px; margin: 15px;
       border-radius: 16px; border-left: 8px solid #ff6b00;
@@ -61,7 +57,6 @@
     }
     .ponto:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(255,107,0,0.3); }
     .ponto strong { font-size: 22px; color: #d84315; }
-
     .detalhes {
       display: none; background: white; padding: 25px;
       margin-top: 15px; border-radius: 12px;
@@ -71,32 +66,27 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0;
     }
     @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
-
     .info-item {
       background: #fff3e0; padding: 12px; border-radius: 10px;
       border-left: 4px solid #ff8f00;
     }
     .info-item strong { color: #e65100; }
-
     .senha-ponto {
       background: #ffe0b2 !important; padding: 15px !important;
       font-size: 18px !important; font-weight: bold !important;
       text-align: center; border-radius: 12px;
       border: 2px solid #ff6b00 !important;
     }
-
     .musicas-lista {
       background: #f9f9f9; padding: 18px; border-radius: 12px;
       margin: 18px 0; line-height: 2.1; font-size: 15px;
     }
     .musicas-lista strong { color: #e65100; display: block; margin-bottom: 10px; font-size: 17px; }
     .musica-item { padding: 4px 0; }
-
     .btn-porcentagem {
       background: linear-gradient(135deg, #e65100, #ff6b00) !important;
       margin-top: 20px; font-size: 18px !important;
     }
-
     .popup-porcentagem {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.9); display: flex;
@@ -122,28 +112,26 @@
     .resultado-recebe { color: #e65100; font-weight: 900; font-size: 28px; }
     .resultado-sobra { color: #2e7d32; font-weight: 900; font-size: 26px; }
     .close-popup { background: #c62828 !important; padding: 14px 20px; margin-top: 15px; }
-
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
   <div class="container">
     <!-- LOGIN -->
     <div id="login-screen">
       <div class="header"><h1>MEUS PONTOS</h1></div>
       <div class="login-box">
         <input type="text" id="cpf" placeholder="CPF do locador (apenas números)" maxlength="11" />
-        <input type="password" id="referencia" placeholder="Referência (sua senha)" />
+        <input type="text" id="referencia" placeholder="Referência (8 dígitos)" maxlength="8" />
         <button onclick="acessarPainel()">ACESSAR MEUS PONTOS</button>
       </div>
     </div>
 
-    <!-- PAINEL -->
+    <!-- PAINEL PRINCIPAL -->
     <div id="painel-screen" class="hidden">
       <div class="header"><h1>MEUS PONTOS</h1></div>
-      <div class="painel">
-        <div id="valor-bruto" class="valor-bruto">VALOR BRUTO DOS PONTOS: R$ 0,00</div>
+      <div style="padding:20px;">
+        <div id="valor-bruto" class="valor-bruto">VALOR BRUTO: R$ 0,00</div>
         <div id="lista-pontos"></div>
       </div>
     </div>
@@ -156,14 +144,12 @@
       <p>Valor bruto deste ponto: <strong id="valor-ponto">0</strong> créditos</p>
       <input type="number" id="porcentagem-input" placeholder="Digite a %" min="1" max="100" />
       <button onclick="calcularPorcentagem()">CALCULAR</button>
-      
       <div id="resultado-box" class="resultado-box hidden">
-        <div>Comercio Recebe (<span id="pct">30</span>%):</div>
+        <div>Comércio recebe (<span id="pct">30</span>%):</div>
         <div class="resultado-recebe">R$ <span id="recebe">60,00</span></div>
-        <div>Sobra para o Locador:</div>
+        <div>Sobra para você:</div>
         <div class="resultado-sobra">R$ <span id="sobra">140,00</span></div>
       </div>
-      
       <button class="close-popup" onclick="fecharPopup()">FECHAR</button>
     </div>
   </div>
@@ -174,8 +160,10 @@
     async function acessarPainel() {
       const cpf = document.getElementById('cpf').value.trim();
       const ref = document.getElementById('referencia').value.trim();
+
       if (!cpf || !ref) return alert('Preencha CPF e Referência!');
-      if (cpf.length !== 11 || !/^\d+$/.test(cpf)) return alert('CPF deve ter 11 números!');
+      if (cpf.length !== 11) return alert('CPF deve ter 11 números!');
+      if (ref.length !== 8) return alert('A referência deve ter exatamente 8 números!');
 
       const url = `https://script.google.com/macros/s/AKfycbz2Xe-Ge7MzchHKpYxnFnfL9g3AjLf9ZtgU62gT9jwdo4LZRxpR9ywWfI9dVIu85QKvdw/exec?rota=/consultar_pontos_por_cpf_referencia?cpf_locador=${cpf}&referencia=${ref}`;
 
@@ -183,16 +171,18 @@
         const res = await fetch(url);
         const data = await res.json();
 
-        if (data.status !== "sucesso" || !data.pontos || data.referencia !== ref) {
-          alert('CPF ou Referência incorretos!');
-          return;
+        if (!data.pontos || data.pontos.length === 0) {
+          return alert('Nenhum ponto encontrado com esse CPF e referência.');
         }
 
-        document.getElementById('login-screen').remove();
+        // Entrar no painel
+        document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('painel-screen').classList.remove('hidden');
 
-        const totalEntradas = data.pontos.reduce((s, p) => s + (parseInt(p.entradas) || 0), 0);
-        document.getElementById('valor-bruto').innerHTML = `VALOR BRUTO DOS PONTOS: R$ ${totalEntradas.toFixed(2).replace('.', ',')}`;
+        // Calcular total de créditos
+        const totalCreditos = data.pontos.reduce((sum, p) => sum + (parseInt(p.entradas) || 0), 0);
+        document.getElementById('valor-bruto').innerHTML = 
+          `VALOR BRUTO TOTAL: R$ ${totalCreditos.toFixed(2).replace('.', ',')}`;
 
         const container = document.getElementById('lista-pontos');
         container.innerHTML = '';
@@ -200,28 +190,34 @@
         data.pontos.forEach(ponto => {
           const div = document.createElement('div');
           div.className = 'ponto';
-          div.innerHTML = `<strong>${ponto.nome}</strong>`;
+          div.innerHTML = `<strong>${ponto.nome.toUpperCase()}</strong>`;
 
           const detalhes = document.createElement('div');
           detalhes.className = 'detalhes';
 
+          // === TRATAMENTO INTELIGENTE DAS MÚSICAS (suporta JSON e string antiga) ===
           let musicasHTML = '<div class="musicas-lista"><strong>Músicas tocadas:</strong><br>';
           if (ponto.musicas && ponto.musicas.trim() !== '') {
             try {
-              let musicas = [];
-              const parsed = JSON.parse(ponto.musicas);
-              if (Array.isArray(parsed)) musicas = parsed;
-              else if (parsed.titulo) musicas = [parsed];
-
-              if (musicas.length > 0) {
-                musicas.forEach(m => {
-                  if (m.titulo) musicasHTML += `<div class="musica-item">• ${m.titulo}</div>`;
+              const musicas = JSON.parse(ponto.musicas);
+              const lista = Array.isArray(musicas) ? musicas : [musicas];
+              if (lista.length > 0) {
+                lista.forEach(m => {
+                  const titulo = m.titulo || m;
+                  musicasHTML += `<div class="musica-item">• ${titulo}</div>`;
                 });
               } else {
                 musicasHTML += '<div class="musica-item">Nenhuma música tocada</div>';
               }
-            } catch (e) {
-              musicasHTML += '<div class="musica-item">Erro ao carregar músicas</div>';
+            } catch {
+              // Formato antigo: string separada por vírgula
+              ponto.musicas.split(',').forEach(m => {
+                const titulo = m.trim();
+                if (titulo) musicasHTML += `<div class="musica-item">• ${titulo}</div>`;
+              });
+              if (!ponto.musicas.includes(',')) {
+                musicasHTML += `<div class="musica-item">• ${ponto.musicas.trim()}</div>`;
+              }
             }
           } else {
             musicasHTML += '<div class="musica-item">Nenhuma música tocada ainda</div>';
@@ -230,19 +226,16 @@
 
           detalhes.innerHTML = `
             <div class="info-grid">
-              <div class="info-item"><strong>Entradas:</strong> ${ponto.entradas} crédito(s)</div>
-              <div class="info-item"><strong>ID Usuário:</strong> ${ponto.usuario_id}</div>
-              <div class="info-item"><strong>Nome Locador:</strong> ${ponto.nome_locador}</div>
-              <div class="info-item"><strong>CPF Locador:</strong> ${ponto.cpf_locador}</div>
-              <div class="info-item"><strong>Email:</strong> ${ponto.email_locador}</div>
-              <div class="info-item"><strong>Contato:</strong> ${ponto.contato}</div>
+              <div class="info-item"><strong>Entradas:</strong> ${ponto.entradas || 0} crédito(s)</div>
+              <div class="info-item"><strong>Referência:</strong> ${ponto.usuario_id}</div>
+              <div class="info-item"><strong>Locador:</strong> ${ponto.nome_locador}</div>
+              <div class="info-item"><strong>CPF:</strong> ${ponto.cpf_locador}</div>
+              <div class="info-item"><strong>E-mail:</strong> ${ponto.email_locador || 'Não informado'}</div>
+              <div class="info-item"><strong>Contato:</strong> ${ponto.contato || 'Não informado'}</div>
             </div>
-
             <div class="senha-ponto">SENHA DO PONTO: ${ponto.senha}</div>
-
             ${musicasHTML}
-
-            <button class="btn-porcentagem" onclick="event.stopPropagation(); abrirPopupPorcentagem(${ponto.entradas})">
+            <button class="btn-porcentagem" onclick="event.stopPropagation(); abrirPopupPorcentagem(${ponto.entradas || 0})">
               CALCULAR MINHA PORCENTAGEM
             </button>
           `;
@@ -259,7 +252,8 @@
         });
 
       } catch (err) {
-        alert('Erro de conexão. Tente novamente.');
+        console.error(err);
+        alert('Erro de conexão. Verifique sua internet e tente novamente.');
       }
     }
 
@@ -273,14 +267,12 @@
 
     function calcularPorcentagem() {
       const pct = parseFloat(document.getElementById('porcentagem-input').value);
-      if (!pct || pct < 1 || pct > 100) return alert('Digite uma porcentagem de 1 a 100');
-
-      const recebe = pontoAtual * (pct / 100);
-      const sobra = pontoAtual - recebe;
-
+      if (!pct || pct < 1 || pct > 100) return alert('Digite uma porcentagem válida (1 a 100)');
+      const recebe = (pontoAtual * pct / 100).toFixed(2).replace('.', ',');
+      const sobra = (pontoAtual - (pontoAtual * pct / 100)).toFixed(2).replace('.', ',');
       document.getElementById('pct').textContent = pct;
-      document.getElementById('recebe').textContent = recebe.toFixed(2).replace('.', ',');
-      document.getElementById('sobra').textContent = sobra.toFixed(2).replace('.', ',');
+      document.getElementById('recebe').textContent = recebe;
+      document.getElementById('sobra').textContent = sobra;
       document.getElementById('resultado-box').classList.remove('hidden');
     }
 
@@ -290,5 +282,3 @@
   </script>
 </body>
 </html>
-
-
